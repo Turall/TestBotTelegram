@@ -41,12 +41,20 @@ namespace TestBotTelegram
 
                 if (e.Message.Type == Telegram.Bot.Types.Enums.MessageType.Text)
                 {
-
+                    Console.WriteLine(e.Message.Text);
                     if (contex.products.Any(x => x.ProductName == e.Message.Text))
                     {
                         var price = contex.products.First(p => p.ProductName.Equals(e.Message.Text));
 
                         botClient.SendTextMessageAsync(e.Message.Chat.Id, price.Price + " Azn");
+                    }
+                    else if(contex.products.Any(x=> x.ProductName != e.Message.Text))
+                    {
+                        var product = contex.products.Where(x => x.ProductName.StartsWith(e.Message.Text));
+                        foreach (var item in product)
+                        {
+                            botClient.SendTextMessageAsync(e.Message.Chat.Id, item.ProductName + "--" + item.Price + " AZN");
+                        }
                     }
                     else
                         botClient.SendTextMessageAsync(e.Message.Chat.Id,"Coming soon :)))) ");
